@@ -1,5 +1,7 @@
 name: blueprints-complex-inputs
-# yaml-language-server: $schema=schema.json
+
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stevestrutt/blueprint-json-schema/master/schema.json
+
 type: blueprint
 schema_version: "1.0.0"
 description: "Sample blueprint to demonstrate passing of complex Terraform variables"
@@ -103,4 +105,4 @@ modules:
           - name: provider_version
             value: 1.38.2
           - name: provider_source
-            value: IBM-Cloud/ibm  
+            value: IBM-Cloud/ibm
