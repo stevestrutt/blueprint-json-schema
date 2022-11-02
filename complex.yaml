@@ -1,0 +1,16 @@
+name: blueprints-complex-inputs
+# yaml-language-server: $schema=schema.json
+type: blueprint
+schema_version: "1.0.0"
+description: "Sample blueprint to demonstrate passing of complex Terraform variables"
+modules:
+  - name: terraform_module1
+    module_type: terraform
+    source:
+      source_type: github
+      git:
+        git_repo_url: "https://github.com/Cloud-Schematics/blueprint-example-modules/tree/main/tf-inputs-outputs"
+        git_branch: "main"
+      catalog:
+        catalog_name: gggg
+    

@@ -1,0 +1,432 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "title": "BlueprintV1",
+    "id$": "BlueprintV1",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "schema_version": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "source": {
+            "$ref": "#/$defs/Source"
+        },
+        "tags": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "location": {
+            "type": "string"
+        },
+        "inputs": {
+            "items": {
+                "$ref": "#/$defs/Input"
+            },
+            "type": "array"
+        },
+        "settings": {
+            "items": {
+                "$ref": "#/$defs/Setting"
+            },
+            "type": "array"
+        },
+        "outputs": {
+            "items": {
+                "$ref": "#/$defs/Output"
+            },
+            "type": "array"
+        },
+        "modules": {
+            "items": {
+                "$ref": "#/$defs/Module"
+            },
+            "type": "array"
+        }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+        "name",
+        "schema_version",
+        "description",
+        "inputs",
+        "settings",
+        "outputs",
+        "modules"
+    ],
+    "$defs": {
+        "Source": {
+            "properties": {
+                "source_type": {
+                    "enum": [
+                        "github",
+                        "catalog"
+                    ]
+                },
+                "git": {
+                    "$ref": "#/$defs/Git"
+                },
+                "catalog": {
+                    "$ref": "#/$defs/Catalog"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Catalog": {
+            "properties": {
+                "catalog_name": {
+                    "type": "string"
+                },
+                "offering_name": {
+                    "type": "string"
+                },
+                "offering_version": {
+                    "type": "string"
+                },
+                "offering_kind": {
+                    "type": "string"
+                },
+                "catalog_id": {
+                    "type": "string"
+                },
+                "offering_id": {
+                    "type": "string"
+                },
+                "offering_version_id": {
+                    "type": "string"
+                },
+                "offering_repo_url": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "catalog_name"
+            ]
+        },
+        "ModuleInput": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "type": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "sensitive": {
+                    "type": "boolean"
+                },
+                "hidden": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "ModuleOutput": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "secure": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name"
+            ]
+        },
+        "ModuleSetting": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "secure": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "Git": {
+            "properties": {
+                "git_repo_url": {
+                    "type": "string"
+                },
+                "git_token": {
+                    "type": "string"
+                },
+                "git_repo_folder": {
+                    "type": "string"
+                },
+                "git_release": {
+                    "type": "string"
+                },
+                "git_branch": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "git_repo_url"
+            ]
+        },
+        "Input": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "type": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "sensitive": {
+                    "type": "boolean"
+                },
+                "immutable": {
+                    "type": "boolean"
+                },
+                "hidden": {
+                    "type": "boolean"
+                },
+                "required": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name"
+            ]
+        },
+        "Metadata": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "default": {
+                    "type": "string"
+                },
+                "sensitive": {
+                    "type": "boolean"
+                },
+                "immutable": {
+                    "type": "boolean"
+                },
+                "hidden": {
+                    "type": "boolean"
+                },
+                "required": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "type"
+            ]
+        },
+        "Module": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "module_type": {
+                    "type": "string"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "injectors": {
+                    "items": {
+                        "$ref": "#/$defs/Injector"
+                    },
+                    "type": "array"
+                },
+                "inputs": {
+                    "items": {
+                        "$ref": "#/$defs/ModuleInput"
+                    },
+                    "type": "array"
+                },
+                "settings": {
+                    "items": {
+                        "$ref": "#/$defs/ModuleSetting"
+                    },
+                    "type": "array"
+                },
+                "outputs": {
+                    "items": {
+                        "$ref": "#/$defs/ModuleOutput"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "module_type",
+                "name",
+                "source",
+                "inputs"
+            ]
+        },
+        "Output": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "Setting": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                },
+                "use_default": {
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "$ref": "#/$defs/Metadata"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ]
+        },
+        "Injector": {
+            "properties": {
+                "tft_git_url": {
+                    "type": "string"
+                },
+                "tft_git_token": {
+                    "type": "string"
+                },
+                "tft_prefix": {
+                    "type": "string"
+                },
+                "injection_type": {
+                    "type": "string"
+                },
+                "tft_name": {
+                    "type": "string"
+                },
+                "tft_parameters": {
+                    "items": {
+                        "$ref": "#/$defs/TFTParameter"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "tft_git_url",
+                "injection_type",
+                "tft_name",
+                "tft_parameters"
+            ]
+        },
+        "TFTParameter": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ]
+        }
+    }
+}
