@@ -10,13 +10,13 @@ To use schema directly from github add the `modeline`
 
 Alternatively download schema.json to the local filesystem. Filepath is relative to the currently active VSCode workspace. The following will locate the schema in the same directory as   
 
-`# yaml-language-server: $schema=schema.json`
+`# yaml-language-server: $schema=../schema.json`
 
 Example templates can be found in the /templates folder
 
 
 ## Initial release
 - All blueprint template keywords defined for Schema V1.0
-- No conditional evaluation of sub-schemas, e.g. source_type > github/catalog
-- No type validation  
+- No conditional evaluation of sub-schemas, e.g. source_type > github/catalog broken at release 1.3 of YAML extension. 
+
 

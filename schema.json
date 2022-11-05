@@ -1,55 +1,62 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
-    "title": "BlueprintV1",
-    "id$": "BlueprintV1",
+    "$schema": "https://json-schema.org/draft-04/schema",
+    "title": "Schematics_Blueprint_v1",
+    "id$": "Schematics_Blueprint_v1",
     "properties": {
         "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Name of template for identification purposes."
         },
         "schema_version": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+            "description": "Version of blueprint template schema in SemVer format"
         },
         "type": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "blueprint"
+            ],
+            "description": "Identifier for the file type. Set to 'blueprint'"
         },
         "description": {
-            "type": "string"
-        },
-        "source": {
-            "$ref": "#/$defs/Source"
+            "type": "string",
+            "description": "User description of the blueprint template"
         },
         "tags": {
             "items": {
                 "type": "string"
             },
-            "type": "array"
-        },
-        "location": {
-            "type": "string"
+            "type": "array",
+            "description": "Tags to be attached to provisioned resources. As an array"
         },
         "inputs": {
             "items": {
                 "$ref": "#/$defs/Input"
             },
-            "type": "array"
+            "type": "array",
+            "description": "Template inputs that must be specified"
         },
         "settings": {
             "items": {
                 "$ref": "#/$defs/Setting"
             },
-            "type": "array"
+            "type": "array",
+            "description": "Settings to be applied to all modules in the template"
         },
         "outputs": {
             "items": {
                 "$ref": "#/$defs/Output"
             },
-            "type": "array"
+            "type": "array",
+            "description": "Outputs that will be returned by Blueprints"
         },
         "modules": {
             "items": {
                 "$ref": "#/$defs/Module"
             },
-            "type": "array"
+            "type": "array",
+            "description": "List of module definitions"
         }
     },
     "additionalProperties": false,
@@ -59,8 +66,6 @@
         "schema_version",
         "description",
         "inputs",
-        "settings",
-        "outputs",
         "modules"
     ],
     "$defs": {
@@ -69,8 +74,10 @@
                 "source_type": {
                     "enum": [
                         "github",
-                        "catalog"
-                    ]
+                        "catalog",
+                        "gitlab"
+                    ],
+                    "description": "Source library, one of catalog, gitlab or github. Followed by git or catalog key fields"
                 },
                 "git": {
                     "$ref": "#/$defs/Git"
@@ -79,7 +86,10 @@
                     "$ref": "#/$defs/Catalog"
                 }
             },
-            "additionalProperties": false
+            "additionalProperties": false,
+            "required": [
+                "source_type"
+            ]
         },
         "Catalog": {
             "properties": {
@@ -126,19 +136,23 @@
                         },
                         {
                             "type": "number"
+                        },
+                        {
+                            "type": "boolean"
                         }
-                    ]
+                    ],
+                    "pattern": "^((\\$(((module)\\.[A-Za-z\\d_-]+\\.(outputs))|(blueprint))\\.[A-Za-z\\d_-]+$)|([^\\$].*)|(^$))",
+                    "description": "Input value, sourced from the template inputs as $blueprint.<input_name>, another module as $module.<module_name>.outputs.<output_name>, or a specified value in HCL format."
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^(string)|(number)|(bool)|(list)|(map)",
+                    "description": "Any valid HCL type, as a single or multi-line string. YAML multi-line entry supported using literal (pipe) or folded (>) formatting "
                 },
                 "description": {
                     "type": "string"
                 },
                 "sensitive": {
-                    "type": "boolean"
-                },
-                "hidden": {
                     "type": "boolean"
                 }
             },
@@ -152,15 +166,10 @@
         "ModuleOutput": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Named output of Terraform module"
                 },
-                "value": {
-                    "type": "string"
-                },
-                "secure": {
-                    "type": "boolean"
-                },
-                "type": {
+                "description": {
                     "type": "string"
                 }
             },
@@ -176,10 +185,20 @@
                     "type": "string"
                 },
                 "value": {
-                    "type": "string"
-                },
-                "secure": {
-                    "type": "boolean"
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 },
                 "type": {
                     "type": "string"
@@ -195,31 +214,66 @@
         "Git": {
             "properties": {
                 "git_repo_url": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "(\\w+://)(.+@)*([\\w\\d\\.]+)/*(.*)",
+                    "description": "URL of the Git repo containing the Terraform module"
                 },
                 "git_token": {
                     "type": "string"
                 },
-                "git_repo_folder": {
-                    "type": "string"
-                },
                 "git_release": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Release in SemVer format. Mutually exclusive with git_branch. Omit to get latest release",
+                    "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
                 },
                 "git_branch": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Git branch for module source. Mutually exclusive with git_release. Omit to get latest release"
                 }
             },
             "additionalProperties": false,
             "type": "object",
             "required": [
                 "git_repo_url"
+            ],
+            "anyOf": [
+                {
+                    "oneOf": [
+                        {
+                            "required": [
+                                "git_release"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "git_branch"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "not": {
+                        "anyOf": [
+                            {
+                                "required": [
+                                    "git_release"
+                                ]
+                            },
+                            {
+                                "required": [
+                                    "git_branch"
+                                ]
+                            }
+                        ]
+                    }
+                }
             ]
         },
         "Input": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Input to the template. Specify a value to define a constant to be used as the input. Omit the value definition to source from user inputs"
                 },
                 "value": {
                     "oneOf": [
@@ -228,11 +282,21 @@
                         },
                         {
                             "type": "number"
+                        },
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
                         }
-                    ]
+                    ],
+                    "description": "If specified contains a value to define a constant to be used as the input. Omit the value definition to source from user inputs",
+                    "pattern": "^((|([^\\$].*)|(^$))"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^(string)|(number)|(bool)|(list)|(map)|(null)",
+                    "description": "Any valid HCL type, as a single or multi-line string. YAML multi-line entry supported using literal (pipe) or folded (>) formatting "
                 },
                 "description": {
                     "type": "string"
@@ -246,7 +310,7 @@
                 "hidden": {
                     "type": "boolean"
                 },
-                "required": {
+                "default": {
                     "type": "boolean"
                 }
             },
@@ -256,73 +320,54 @@
                 "name"
             ]
         },
-        "Metadata": {
-            "properties": {
-                "type": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "default": {
-                    "type": "string"
-                },
-                "sensitive": {
-                    "type": "boolean"
-                },
-                "immutable": {
-                    "type": "boolean"
-                },
-                "hidden": {
-                    "type": "boolean"
-                },
-                "required": {
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false,
-            "type": "object",
-            "required": [
-                "type"
-            ]
-        },
         "Module": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Identifier for module used within the template to create references. "
                 },
                 "module_type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "terraform"
+                    ],
+                    "description": "Type of automation code. Only terraform is supported at present"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "Source repository for automation module"
                 },
                 "tags": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "User tags to be applied to resources provisioned by the module"
                 },
                 "injectors": {
                     "items": {
                         "$ref": "#/$defs/Injector"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "Inject Terraform provider definition for non-root modules"
                 },
                 "inputs": {
                     "items": {
                         "$ref": "#/$defs/ModuleInput"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "List of module inputs"
                 },
                 "settings": {
                     "items": {
                         "$ref": "#/$defs/ModuleSetting"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "List of settings to be applied to this module, e.g TF_VERSION. See documentation for a list of supported options"
                 },
                 "outputs": {
                     "items": {
                         "$ref": "#/$defs/ModuleOutput"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "Named outputs returned by the Terraform module"
                 }
             },
             "additionalProperties": false,
@@ -337,9 +382,15 @@
         "Output": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of output to return"
                 },
                 "value": {
+                    "type": "string",
+                    "pattern": "^(\\$module)\\.[A-za-z0-9]*\\.(outputs)\\.[A-za-z0-9]*.$",
+                    "description": "Reference to the named output of a module in the format \n \"$module.<module_name>.outputs.<output_name>\""
+                },
+                "description": {
                     "type": "string"
                 }
             },
@@ -353,7 +404,8 @@
         "Setting": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "See documentation for a list of supported settings"
                 },
                 "value": {
                     "oneOf": [
@@ -362,14 +414,14 @@
                         },
                         {
                             "type": "number"
+                        },
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
                         }
                     ]
-                },
-                "use_default": {
-                    "type": "boolean"
-                },
-                "metadata": {
-                    "$ref": "#/$defs/Metadata"
                 }
             },
             "additionalProperties": false,
@@ -382,7 +434,9 @@
         "Injector": {
             "properties": {
                 "tft_git_url": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "(\\w+://)(.+@)*([\\w\\d\\.]+)/*(.*)",
+                    "description": "Git repo containing injection template files. \n Normally https://github.com/Cloud-Schematics/tf-templates"
                 },
                 "tft_git_token": {
                     "type": "string"
@@ -391,16 +445,27 @@
                     "type": "string"
                 },
                 "injection_type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "override",
+                        "inject"
+                    ],
+                    "description": "Injector type, one of inject or override"
                 },
                 "tft_name": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "ibm",
+                        "kubernetes"
+                    ],
+                    "description": "Injector template name, one of ibm or kubernetes"
                 },
                 "tft_parameters": {
                     "items": {
                         "$ref": "#/$defs/TFTParameter"
                     },
-                    "type": "array"
+                    "type": "array",
+                    "description": "Input parameters to configure the injector template. See template repo for details"
                 }
             },
             "additionalProperties": false,
@@ -415,10 +480,16 @@
         "TFTParameter": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name value pair. Only static values allowed, defined as strings"
                 },
                 "value": {
-                    "type": "string"
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Only static values allowed, defined as a string"
                 }
             },
             "additionalProperties": false,
