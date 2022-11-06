@@ -1,6 +1,5 @@
 name: "blueprints-complex-inputs"
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stevestrutt/blueprint-json-schema/master/schema.json
-## yaml-language-server: $schema=schema.json
 type: "blueprint"
 schema_version: "1.0.0"
 description: "test"

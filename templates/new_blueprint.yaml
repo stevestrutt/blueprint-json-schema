@@ -1,6 +1,5 @@
-## yaml-language-server: $schema=../blueprint_schema.json
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Cloud-Schematics/vscode-blueprint-json-schema/master/blueprint_schema.json
 name: "new"
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stevestrutt/blueprint-json-schema/master/schema.json
 schema_version: "1.0.0"
 type: blueprint
 description: "new"
