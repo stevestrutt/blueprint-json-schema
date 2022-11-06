@@ -1,21 +1,26 @@
-# VSCode language support for IBM Cloud Schematics blueprint templates 
+# VSCode language support for IBM Cloud Schematics Blueprints 
 
-Enable blueprint template editing and validation in VSCode using the Redhat YAML language server extension and blueprint JSON-Schema. 
-- YAML language support with blueprint schema validation
-  - Validation of YAML structure and blueprint key words 
+Create and edit blueprint templates in VSCode using the Redhat YAML language server extension and a blueprint template schema. 
+
+The [Red Hat YAML VSCode extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) provides a framework for editing blueprint yaml files, using a blueprint schema defined using JSON-Schema. 
+
+Support:
+- YAML language support with blueprint template schema validation
+  - Validation of YAML structure and blueprint keywords 
 - Autocomplete
-  - Auto complete for template key words
+  - Auto complete for template keywords
 - Hover support
-  - Hovering over a node shows blueprint schema description
+  - Hovering over a keyword shows the blueprint schema description
+- Outlining for complex templates  
 
 
 <br/>
 
 ## 1. Install the Red Hat YAML Language extension 
 
+Details of the Red Hat YAML extension for VSCode 
 
 
-https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml
 
 
 
@@ -26,6 +31,31 @@ This will bring you to the “Extensions” list. Type YAML in the search box an
 
 ![yamlextension](images/YAMLextension.png)
 
+Click on Install to install the extension into your workspace. 
+
+## 2. Using the blueprint JSON schema
+
+The blueprint JSON schema must be identified to VSCode, as it is not automatically recognised. The association of the blueprint schema can be done either in the blueprint YAML file itself using a modeline or in the VSCode User or Workspace settings under the property `yaml.schemas`.
+
+### Associating the schema in the blueprint YAML file
+It is possible to specify the blueprint schema using a modeline in the blueprint YAML file. The blueprint schema url can be a relative path to a local file or the url of the schema in the Cloud-Schematics Github repo.  
+
+Cut and paste the following text into the blueprint YAML file, within the first few lines of the file. 
+
+```
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Cloud-Schematics/vscode-blueprint-json-schema/master/blueprint_schema.json
+```
+
+### Associating the blueprint schema via user and workspace settings
+Alternatively the schema can be automatically applied using file matching defined in the VSCode user or workspace settings. The `yaml.schemas` setting applies a YAML schema to a file by file matching. 
+
+Open [user and workspace settings](https://code.visualstudio.com/docs/getstarted/settings#_creating-user-and-workspace-settings) and navigate to the `yaml.schemas` section. Cut and paste the following value onto the section. 
+
+```
+yaml.schemas: {
+    "https://github.com/Cloud-Schematics/vscode-blueprint-yaml-schema/": "/*_blueprint.yaml"
+}
+```
 
 # JSON Schema for Schematics Blueprints
 

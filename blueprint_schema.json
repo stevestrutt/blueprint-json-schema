@@ -5,7 +5,7 @@
     "properties": {
         "name": {
             "type": "string",
-            "description": "Name of template for identification purposes."
+            "description": "Name of blueprint template for identification purposes. \n Blueprint docs: https://cloud.ibm.com/docs/schematics?topic=schematics-blueprint-templates"
         },
         "schema_version": {
             "type": "string",
@@ -17,7 +17,7 @@
             "enum": [
                 "blueprint"
             ],
-            "description": "Identifier for the file type. Set to 'blueprint'"
+            "description": "Identifier for the schema type. Set to 'blueprint'"
         },
         "description": {
             "type": "string",
@@ -28,35 +28,35 @@
                 "type": "string"
             },
             "type": "array",
-            "description": "Tags to be attached to provisioned resources. As an array"
+            "description": "Tags to be attached to provisioned resources. An array of comma separated strings"
         },
         "inputs": {
             "items": {
                 "$ref": "#/$defs/Input"
             },
             "type": "array",
-            "description": "Template inputs that must be specified"
+            "description": "Template inputs that must be specified. \n https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-inputs"
         },
         "settings": {
             "items": {
                 "$ref": "#/$defs/Setting"
             },
             "type": "array",
-            "description": "Settings to be applied to all modules in the template"
+            "description": "Settings to be applied to all modules in the template \n Spec: https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-settings"
         },
         "outputs": {
             "items": {
                 "$ref": "#/$defs/Output"
             },
             "type": "array",
-            "description": "Outputs that will be returned by Blueprints"
+            "description": "Outputs that will be returned by Blueprints. \n Spec:https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-outputs"
         },
         "modules": {
             "items": {
                 "$ref": "#/$defs/Module"
             },
             "type": "array",
-            "description": "List of blueprint module definitions \n Spec: https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-modules-schema"
+            "description": "List of blueprint module definitions \n Using modules docs: https://cloud.ibm.com/docs/schematics?topic=schematics-blueprint-terraform \n Spec: https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-modules-schema"
         }
     },
     "additionalProperties": false,
@@ -277,7 +277,7 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "description": "Input to the template. Specify a value to define a constant to be used as the input. Omit the value definition to source from user inputs"
+                    "description": "Input to the template. Specify the value keyword to define a constant to be used as the input. Omit the value keyword to source the value from the user inputs"
                 },
                 "value": {
                     "oneOf": [
@@ -300,13 +300,18 @@
                 "type": {
                     "type": "string",
                     "pattern": "^(string)|(number)|(bool)|(list)|(map)|(null)",
-                    "description": "Any valid HCL type, as a single or multi-line string. YAML multi-line entry supported using literal (pipe) or folded (>) formatting "
+                    "description": "Any valid HCL type, as a single or multi-line string. YAML multi-line entry is supported using literal (pipe) or folded (>) formatting "
                 },
                 "description": {
                     "type": "string"
                 },
                 "sensitive": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "enum": [
+                        true,
+                        false
+                    ],
+                    "description": "Sensitive input value that should be masked in any output."
                 },
                 "immutable": {
                     "type": "boolean"
