@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../schema.json
+name: "new"
+schema_version: "1.0.0"
+type: blueprint
+description: "new"
+inputs:
+  - name: "new"
+modules:
+  - name: new
+    module_type: terraform
+    source:
+      source_type: github
+      git:
+        git_repo_url: http://gg
+    inputs:
+      - name: new
+        value: new

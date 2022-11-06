@@ -56,13 +56,14 @@
                 "$ref": "#/$defs/Module"
             },
             "type": "array",
-            "description": "List of module definitions"
+            "description": "List of blueprint module definitions \n Spec: https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-modules-schema"
         }
     },
     "additionalProperties": false,
     "type": "object",
     "required": [
         "name",
+        "type",
         "schema_version",
         "description",
         "inputs",
@@ -77,13 +78,15 @@
                         "catalog",
                         "gitlab"
                     ],
-                    "description": "Source library, one of catalog, gitlab or github. Followed by git or catalog key fields"
+                    "description": "Source library, one of catalog, gitlab or github. Followed by 'git' or 'catalog' key fields. \n Follow with the git keyword for Git repos that require a git_url. \n Follow with catalog keyword to define catalog specification. "
                 },
                 "git": {
-                    "$ref": "#/$defs/Git"
+                    "$ref": "#/$defs/Git",
+                    "description": "Git source definition. Mutually exclusive with the catalog definition."
                 },
                 "catalog": {
-                    "$ref": "#/$defs/Catalog"
+                    "$ref": "#/$defs/Catalog",
+                    "description": "Catalog source definition. Mutually exclusive with the git definition."
                 }
             },
             "additionalProperties": false,
@@ -127,7 +130,8 @@
         "ModuleInput": {
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of variable to be passed to terraform. Must match a variable name in the modules' Terraform config"
                 },
                 "value": {
                     "oneOf": [
@@ -290,8 +294,8 @@
                             "type": "null"
                         }
                     ],
-                    "description": "If specified contains a value to define a constant to be used as the input. Omit the value definition to source from user inputs",
-                    "pattern": "^((|([^\\$].*)|(^$))"
+                    "description": "If specified, contains a value to define a constant to be used as the input. Omit the value keyword to source from user inputs",
+                    "pattern": "([^\\$].*)"
                 },
                 "type": {
                     "type": "string",
@@ -335,7 +339,7 @@
                 },
                 "source": {
                     "$ref": "#/$defs/Source",
-                    "description": "Source repository for automation module"
+                    "description": "Source repository definition for automation module. Followed by 'source_type'"
                 },
                 "tags": {
                     "type": "string",
@@ -346,14 +350,14 @@
                         "$ref": "#/$defs/Injector"
                     },
                     "type": "array",
-                    "description": "Inject Terraform provider definition for non-root modules"
+                    "description": "Inject Terraform provider definition for non-root modules \n Spec: https://cloud.ibm.com/docs/schematics?topic=schematics-bp-template-schema-yaml#bp-modules-injector \n Docs: https://cloud.ibm.com/docs/schematics?topic=schematics-blueprint-terraform#bp-provider-injection"
                 },
                 "inputs": {
                     "items": {
                         "$ref": "#/$defs/ModuleInput"
                     },
                     "type": "array",
-                    "description": "List of module inputs"
+                    "description": "List of inputs to be passed to the Terraform module, as name/value pairs"
                 },
                 "settings": {
                     "items": {

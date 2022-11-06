@@ -20,3 +20,6 @@ modules:
     inputs:
       - name: "value"
         value: "vvvv"
+  - name: "new"
+    value: null
+

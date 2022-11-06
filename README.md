@@ -1,3 +1,32 @@
+# VSCode language support for IBM Cloud Schematics blueprint templates 
+
+Enable blueprint template editing and validation in VSCode using the Redhat YAML language server extension and blueprint JSON-Schema. 
+- YAML language support with blueprint schema validation
+  - Validation of YAML structure and blueprint key words 
+- Autocomplete
+  - Auto complete for template key words
+- Hover support
+  - Hovering over a node shows blueprint schema description
+
+
+<br/>
+
+## 1. Install the Red Hat YAML Language extension 
+
+
+
+https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml
+
+
+
+
+Click on the “Extensions” button in the Activity Bar. It’s located on the side of VS Code’s client. Alternatively, you can use the keyboard shortcut “Ctrl+Shift+X” or "Cmd+Shift+X" on MacOS to open the “Extensions” screen.
+
+This will bring you to the “Extensions” list. Type YAML in the search box and this will sort the available YAML extensions with the Red Hat extension at the top. 
+
+![yamlextension](images/YAMLextension.png)
+
+
 # JSON Schema for Schematics Blueprints
 
 Initial JSON Schema for template validation in VSCode using Redhat YAML extension. 

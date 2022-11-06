@@ -27,6 +27,8 @@ modules:
       git:
         git_repo_url: "https://github.com/Cloud-Schematics/blueprint-example-modules/tree/main/tf-inputs-outputs"
         git_branch: "main"
+      catalog:
+        catalog_name: gggg
     inputs:
       # default string
       - name: sample_var
@@ -103,3 +105,14 @@ modules:
             value: 1.38.2
           - name: provider_source
             value: IBM-Cloud/ibm
+  - name: new
+    module_type: terraform
+    source:
+      source_type: github
+      git:
+        git_repo_url: http://gg
+        git_branch: new
+        git_release: "1.0.0"
+    inputs:
+      - name: naew
+        value: "24"
